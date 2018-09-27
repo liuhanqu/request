@@ -1,0 +1,16 @@
+{
+  "name": "@lhq/request",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^10.11.0",
+    "typescript": "^3.0.3"
+  }
+}
