@@ -4,7 +4,11 @@ export interface Option extends RequestInit {
   timeout?: number;
 }
 
-class CustomError extends Error {
+if (!(process as any).browser) {
+  (global as any).fetch = require('node-fetch');
+  (global as any).Headers = (global as any).fetch.Headers;
+}
+export class CustomError extends Error {
   constructor(name: string, msg: string, public response?: Response) {
     super(msg);
     this.name = name;
@@ -36,7 +40,7 @@ class Ajax {
   private async request(url: string, option: Option) {
     const {json, params, timeout = 10 * 1000, ...opt} = option;
 
-    const headers = new Headers(opt.headers);
+    const hds = new Headers(opt.headers);
 
     if (params) {
       const querystring = new URLSearchParams(params).toString();
@@ -45,10 +49,10 @@ class Ajax {
 
     if (json) {
       opt.body = JSON.stringify(json);
-      headers.set('Content-Type', 'application/json');
+      hds.set('Content-Type', 'application/json');
     }
 
-    opt.headers = headers;
+    opt.headers = hds;
 
     const res = await race(fetch(url, opt), sleep(timeout));
 
@@ -85,16 +89,16 @@ class Ajax {
   }
 }
 
-const rf = (url: string, option: Option) => {
+const rf = (url: string, option: Option = {}) => {
   return new Ajax(url, option);
 };
 
 type Func = {
-  (url: string, option: Option): Ajax;
+  (url: string, option?: Option): Ajax;
 };
 
 export interface RF {
-  (url: string, option: Option): Ajax;
+  (url: string, option?: Option): Ajax;
   get: Func;
   post: Func;
   delete: Func;
@@ -103,7 +107,7 @@ export interface RF {
 }
 
 ['get', 'post', 'put', 'delete', 'patch'].forEach(verb => {
-  (rf as any)[verb] = (url: string, option: Option) => {
+  (rf as any)[verb] = (url: string, option: Option = {}) => {
     option.method = verb.toUpperCase();
     return new Ajax(url, option);
   };

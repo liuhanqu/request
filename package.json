@@ -5,12 +5,21 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "jest"
   },
   "author": "liuhanqu",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^10.11.0",
+    "babel-jest": "^23.6.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
+    "body": "^5.1.0",
+    "create-test-server": "^2.4.0",
+    "delay": "^4.1.0",
+    "jest": "^23.6.0",
+    "node-fetch": "^2.2.0",
     "typescript": "^3.0.3"
   }
 }

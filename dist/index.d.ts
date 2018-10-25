@@ -3,6 +3,10 @@ export interface Option extends RequestInit {
     params?: Record<string, string>;
     timeout?: number;
 }
+export declare class CustomError extends Error {
+    response?: Response | undefined;
+    constructor(name: string, msg: string, response?: Response | undefined);
+}
 declare class Ajax {
     private response;
     constructor(url: string, option?: Option);
@@ -14,10 +18,10 @@ declare class Ajax {
     arrayBuffer(): Promise<ArrayBuffer>;
 }
 declare type Func = {
-    (url: string, option: Option): Ajax;
+    (url: string, option?: Option): Ajax;
 };
 export interface RF {
-    (url: string, option: Option): Ajax;
+    (url: string, option?: Option): Ajax;
     get: Func;
     post: Func;
     delete: Func;

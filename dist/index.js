@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -55,6 +56,11 @@ var __rest = (this && this.__rest) || function (s, e) {
             t[p[i]] = s[p[i]];
     return t;
 };
+Object.defineProperty(exports, "__esModule", { value: true });
+if (!process.browser) {
+    global.fetch = require('node-fetch');
+    global.Headers = global.fetch.Headers;
+}
 var CustomError = /** @class */ (function (_super) {
     __extends(CustomError, _super);
     function CustomError(name, msg, response) {
@@ -65,6 +71,7 @@ var CustomError = /** @class */ (function (_super) {
     }
     return CustomError;
 }(Error));
+exports.CustomError = CustomError;
 function sleep(ms) {
     return new Promise(function (resolve) {
         setTimeout(resolve, ms, 'timeout');
@@ -86,21 +93,21 @@ var Ajax = /** @class */ (function () {
     }
     Ajax.prototype.request = function (url, option) {
         return __awaiter(this, void 0, void 0, function () {
-            var json, params, _a, timeout, opt, headers, querystring, res;
+            var json, params, _a, timeout, opt, hds, querystring, res;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         json = option.json, params = option.params, _a = option.timeout, timeout = _a === void 0 ? 10 * 1000 : _a, opt = __rest(option, ["json", "params", "timeout"]);
-                        headers = new Headers(opt.headers);
+                        hds = new Headers(opt.headers);
                         if (params) {
                             querystring = new URLSearchParams(params).toString();
                             url = url + '?' + querystring;
                         }
                         if (json) {
                             opt.body = JSON.stringify(json);
-                            headers.set('Content-Type', 'application/json');
+                            hds.set('Content-Type', 'application/json');
                         }
-                        opt.headers = headers;
+                        opt.headers = hds;
                         return [4 /*yield*/, race(fetch(url, opt), sleep(timeout))];
                     case 1:
                         res = _b.sent();
@@ -180,13 +187,15 @@ var Ajax = /** @class */ (function () {
     return Ajax;
 }());
 var rf = function (url, option) {
+    if (option === void 0) { option = {}; }
     return new Ajax(url, option);
 };
 ['get', 'post', 'put', 'delete', 'patch'].forEach(function (verb) {
     rf[verb] = function (url, option) {
+        if (option === void 0) { option = {}; }
         option.method = verb.toUpperCase();
         return new Ajax(url, option);
     };
 });
-export default rf;
+exports.default = rf;
 //# sourceMappingURL=index.js.map
